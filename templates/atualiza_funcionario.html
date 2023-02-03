@@ -1,0 +1,28 @@
+{% extends 'index.html' %}
+{% block conteudo %}
+  <div class="container" id="lista">
+    <br>
+    <h2>Atualizar dados do funcionário</h2>
+    <hr>
+    {% for mensagem in get_flashed_messages() %}
+        <div class="alert alert-danger">
+            {{mensagem}}
+        </div>
+    {%- endfor %}
+    <form action="{{url_for('atualiza_funcionario', id=funcionario.id)}}" method="POST" class="form-control">
+        <label>Nome</label>
+        <input class="form-control" type="text" name="nome" value="{{funcionario.nome}}">
+        <br>
+        <!-- Campo de escolha de funcionário habilitado ou desabilitado -->
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="IdStatus">Status</label>
+          <select class="form-select" id="IdStatus" name="status">
+            <option value="1">Habilitado</option>
+            <option value="0">Desabilitado</option>
+          </select>
+        </div>
+        <button class="btn btn-outline-primary">Enviar</button>
+    </form>
+    <br>
+  </div>
+{% endblock conteudo %}
