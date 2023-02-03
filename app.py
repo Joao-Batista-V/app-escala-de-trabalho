@@ -546,9 +546,8 @@ def escala_2(user1, user2a, user2b, user3, user4, user_folg1, user_folg2, lista_
     cria_tbl_csv(tbl_csv_0, tbl_csv_1, tbl_csv_2, tbl_csv_3, tbl_csv_4, tbl_csv_5)
 
 
-# Função que cria o código HTML e arquivo CSV das tabelas
+# Criação do arquivo CSV das tabelas
 def cria_tbl_csv(tbl_csv_0, tbl_csv_1, tbl_csv_2, tbl_csv_3, tbl_csv_4, tbl_csv_5):
-    # Criação do arquivo CSV
     vars_csv = tbl_csv_0 + tbl_csv_1 + tbl_csv_2 + tbl_csv_3 + tbl_csv_4 + tbl_csv_5
     with open('static/arquivos/tabela.csv', 'w') as f:
         f.write(vars_csv)
