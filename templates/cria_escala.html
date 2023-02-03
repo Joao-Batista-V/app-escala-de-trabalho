@@ -1,0 +1,129 @@
+{% extends 'index.html' %}
+{% block conteudo %}
+
+<div class="container">
+  <form action="{{url_for('cria_escala')}}" method="POST" class="form-control" id="form-container">
+    <br>
+    <h2>Criação da escala</h2>
+    <hr>
+    <!-- Primeiro turno -->
+    <div class="input-group mb-3">
+      <label class="input-group-text col-md-3" for="IdPrimeiroTurno">1° Turno&nbsp; <b>00:00 - 06:15</b> </label>
+      <select class="form-select" id="IdPrimeiroTurno" name="name_t1" required>
+        <option value="#">...</option>
+        {% for funcionario in funcionarios.items %}
+            {% if funcionario.status == 1 %}
+            <option value="{{funcionario.nome}}">{{funcionario.nome}}</option>
+            {% endif %}
+         {% endfor %}
+      </select>
+    </div>
+
+
+    <!-- Segundo turno -->
+    <div class="input-group mb-3">
+      <label class="input-group-text col-md-3" for="IdSegundoTurno1">2° Turno&nbsp;  <b>06:00 - 12:15</b> </label>
+      <select class="form-select" id="IdSegundoTurno1" name="name_t2a" required>
+        <option value="#">...</option>
+        {% for funcionario in funcionarios.items %}
+            {% if funcionario.status == 1 %}
+                <option value="{{funcionario.nome}}">{{funcionario.nome}}</option>
+            {% endif %}
+          {% endfor %}
+      </select>
+    </div>
+
+
+    <!-- Segundo turno -->
+    <div class="input-group mb-3">
+      <label class="input-group-text col-md-3" for="IdSegundoTurno2">2° Turno&nbsp; <b>07:00 - 13:15</b> </label>
+      <select class="form-select" id="IdSegundoTurno2" name="name_t2b" required>
+        <option value="#">...</option>
+        {% for funcionario in funcionarios.items %}
+            {% if funcionario.status == 1 %}
+                <option value="{{funcionario.nome}}">{{funcionario.nome}}</option>
+            {% endif %}
+          {% endfor %}
+      </select>
+    </div>
+
+
+    <!-- Terceiro turno -->
+    <div class="input-group mb-3">
+      <label class="input-group-text col-md-3" for="IdTerceiroTurno">3° Turno&nbsp; <b>12:00 - 18:15</b> </label>
+      <select class="form-select" id="IdTerceiroTurno" name="name_t3" required>
+        <option value="#">...</option>
+        {% for funcionario in funcionarios.items %}
+            {% if funcionario.status == 1 %}
+                <option value="{{funcionario.nome}}">{{funcionario.nome}}</option>
+            {% endif %}
+          {% endfor %}
+      </select>
+    </div>
+
+
+    <!-- Quarto turno -->
+    <div class="input-group mb-3">
+      <label class="input-group-text col-md-3" for="IdQuartoTurno">4° Turno&nbsp; <b>18:00 - 00:15</b> </label>
+      <select class="form-select" id="IdQuartoTurno" name="name_t4" required>
+        <option value="#">...</option>
+        {% for funcionario in funcionarios.items %}
+            {% if funcionario.status == 1 %}
+                <option value="{{funcionario.nome}}">{{funcionario.nome}}</option>
+            {% endif %}
+          {% endfor %}
+      </select>
+    </div>
+
+
+    <!-- Folgista 1 -->
+    <div class="input-group mb-3">
+      <label class="input-group-text col-md-3" for="IdFolgista1">Folgista 1</label>
+      <select class="form-select" id="IdFolgista1" name="name_folg1" required>
+        <option value="#">...</option>
+        {% for funcionario in funcionarios.items %}
+            {% if funcionario.status == 1 %}
+                <option value="{{funcionario.nome}}">{{funcionario.nome}}</option>
+            {% endif %}
+          {% endfor %}
+      </select>
+    </div>
+
+
+    <!-- Folgista 2 -->
+    <div class="input-group mb-3">
+      <label class="input-group-text col-md-3" for="IdFolgista2">Folgista 2</label>
+      <select class="form-select" id="IdFolgista2" name="name_folg2" required>
+        <option value="#">...</option>
+        {% for funcionario in funcionarios.items %}
+            {% if funcionario.status == 1 %}
+                <option value="{{funcionario.nome}}">{{funcionario.nome}}</option>
+            {% endif %}
+          {% endfor %}
+      </select>
+    </div>
+
+
+    <!-- Mes -->
+    <div class="input-group mb-3">
+      <label class="input-group-text col-md-3" for="IdMes">Mes</label>
+      <select class="form-select" id="IdMes" name="mes" required>
+        <option value="1">Janeiro</option>
+        <option value="2">Fevereiro</option>
+        <option value="3">Março</option>
+        <option value="4">Abril</option>
+        <option value="5">Maio</option>
+        <option value="6">Junho</option>
+        <option value="7">Julho</option>
+        <option value="8">Agosto</option>
+        <option value="9">Setembro</option>
+        <option value="10">Outubro</option>
+        <option value="11">Novembro</option>
+        <option value="12">Dezembro</option>
+      </select>
+    </div>
+
+    <button class="btn btn-outline-primary">Enviar</button>
+  </form>
+</div>
+{% endblock conteudo %}

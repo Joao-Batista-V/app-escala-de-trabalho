@@ -1,0 +1,152 @@
+{% extends 'index.html' %}
+{% block conteudo %}
+  <div class="container" id="lista">
+    <br>
+    <h2>Atualizar dados da escala mensal</h2>
+    <hr>
+
+    <form action="{{url_for('atualiza_escala', id=linha_escala.id)}}" method="POST" class="form-control">
+
+        <!-- Turno -->
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="Idturno_db">Turno</label>
+          <select class="form-select" id="Idturno_db" name="turno_db">
+            <option value="{{linha_escala.turno_db}}">{{linha_escala.turno_db}}</option>
+          </select>
+        </div>
+        <br>
+
+        <!-- Horário -->
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="Idhorario_db">Horário</label>
+          <select class="form-select" id="Idhorario_db" name="horario_db">
+            <option value="{{linha_escala.horario_db}}">{{linha_escala.horario_db}}</option>
+          </select>
+        </div>
+        <br>
+
+        <!-- Domingo -->
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="Iddom_db">Domingo</label>
+          <select class="form-select" id="Iddom_db" name="dom_db">
+            <option value="{{linha_escala.dom_db}}">{{linha_escala.dom_db}}</option>
+
+            {% for funcionario in funcionarios.items %}
+                {% if funcionario.status == 1 %}
+                    <option value="{{funcionario.nome}}">{{funcionario.nome}}</option>
+                {% endif %}
+            {% endfor %}
+            <option value=" ">Linha em branco</option>
+
+          </select>
+        </div>
+        <br>
+
+        <!-- Segunda -->
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="Idseg_db">Segunda</label>
+          <select class="form-select" id="Idseg_db" name="seg_db">
+            <option value="{{linha_escala.seg_db}}">{{linha_escala.seg_db}}</option>
+
+            {% for funcionario in funcionarios.items %}
+                {% if funcionario.status == 1 %}
+                    <option value="{{funcionario.nome}}">{{funcionario.nome}}</option>
+                {% endif %}
+            {% endfor %}
+            <option value=" ">Linha em branco</option>
+
+          </select>
+        </div>
+        <br>
+
+        <!-- Terça -->
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="Idter_db">Terça</label>
+          <select class="form-select" id="Idter_db" name="ter_db">
+            <option value="{{linha_escala.ter_db}}">{{linha_escala.ter_db}}</option>
+
+            {% for funcionario in funcionarios.items %}
+                {% if funcionario.status == 1 %}
+                    <option value="{{funcionario.nome}}">{{funcionario.nome}}</option>
+                {% endif %}
+            {% endfor %}
+            <option value=" ">Linha em branco</option>
+
+          </select>
+        </div>
+        <br>
+
+        <!-- Quarta -->
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="Idqua_db">Quarta</label>
+          <select class="form-select" id="Idqua_db" name="qua_db">
+            <option value="{{linha_escala.qua_db}}">{{linha_escala.qua_db}}</option>
+
+            {% for funcionario in funcionarios.items %}
+                {% if funcionario.status == 1 %}
+                    <option value="{{funcionario.nome}}">{{funcionario.nome}}</option>
+                {% endif %}
+            {% endfor %}
+            <option value=" ">Linha em branco</option>
+
+          </select>
+        </div>
+        <br>
+
+        <!-- Quinta -->
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="Idqui_db">Quinta</label>
+          <select class="form-select" id="Idqui_db" name="qui_db">
+            <option value="{{linha_escala.qui_db}}">{{linha_escala.qui_db}}</option>
+
+            {% for funcionario in funcionarios.items %}
+                {% if funcionario.status == 1 %}
+                    <option value="{{funcionario.nome}}">{{funcionario.nome}}</option>
+                {% endif %}
+            {% endfor %}
+            <option value=" ">Linha em branco</option>
+
+          </select>
+        </div>
+        <br>
+
+        <!-- Sexta -->
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="Idsex_db">Sexta</label>
+          <select class="form-select" id="Idsex_db" name="sex_db">
+            <option value="{{linha_escala.sex_db}}">{{linha_escala.sex_db}}</option>
+
+            {% for funcionario in funcionarios.items %}
+                {% if funcionario.status == 1 %}
+                    <option value="{{funcionario.nome}}">{{funcionario.nome}}</option>
+                {% endif %}
+            {% endfor %}
+            <option value=" ">Linha em branco</option>
+
+          </select>
+        </div>
+        <br>
+
+        <!-- Sabado -->
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="Idsab_db">Sabado</label>
+          <select class="form-select" id="Idsab_db" name="sab_db">
+            <option value="{{linha_escala.sab_db}}">{{linha_escala.sab_db}}</option>
+
+            {% for funcionario in funcionarios.items %}
+                {% if funcionario.status == 1 %}
+                    <option value="{{funcionario.nome}}">{{funcionario.nome}}</option>
+                {% endif %}
+            {% endfor %}
+            <option value=" ">Linha em branco</option>
+
+          </select>
+        </div>
+        <br>
+
+
+        <button class="btn btn-outline-primary">Enviar</button>
+    </form>
+    <br>
+  </div>
+{% endblock conteudo %}

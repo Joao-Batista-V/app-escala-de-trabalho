@@ -1,0 +1,38 @@
+{% extends 'index.html' %}
+{% block conteudo %}
+
+  <div class="container" id="lista">
+    <br>
+    <h2>Adicionar usuário</h2>
+    <hr>
+    {% for mensagem in get_flashed_messages() %}
+      <div class="alert alert-danger">
+        {{mensagem}}
+      </div>
+    {% endfor %}
+
+    <!-- Formulário para inclusão do nome do usuário -->
+    <form action="{{url_for('cria_user')}}" method="POST" class="form-control">
+      <!-- Nome -->
+      <label>Nome</label>
+      <input class="form-control" type="text" name="nome" placeholder="Nome do usuário">
+      <br>
+
+      <!-- Usuario -->
+      <label>Usuário</label>
+      <input class="form-control" type="text" name="usuario" placeholder="Usuário">
+      <br>
+
+      <!-- Senha -->
+      <label>Senha</label>
+      <input class="form-control" type="password" name="senha" placeholder="Senha">
+      <br>
+
+      <!-- Valores para a função 'ativo' -->
+      <input class="form-control" type="hidden" name="status" value="1">
+      
+      <button class="btn btn-outline-secondary">Adicionar</button>
+    </form>
+    <br>
+  </div>
+{% endblock conteudo %}
