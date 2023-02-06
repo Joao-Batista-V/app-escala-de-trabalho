@@ -281,6 +281,8 @@ def cria_escala():
             escala_2(user1, user2a, user2b, user3, user4, user_folg1, user_folg2, lista_mes)
         sleep(3)
         return redirect(url_for('escala_mensal'))
+    else:
+        mes = ''
     return render_template("cria_escala.html", funcionarios=todos_funcionarios)
 
 
@@ -619,4 +621,4 @@ def atualiza_escala(id):
 
 # Execução da aplicação
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True)
