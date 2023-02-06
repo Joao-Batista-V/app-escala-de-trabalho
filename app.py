@@ -109,12 +109,10 @@ def login():
         senha = request.form["senha"]
         user = User.query.filter_by(user=usuario).first()
         if not user or not check_password_hash(user.password, senha):  # Verificar se está correto
-            flash("Usuário ou senha inválido!")
+            flash("Usuário ou senha inválidos")
         elif user.status == 1:
             login_user(user)
             return redirect(url_for('pagina_inicial'))
-        else:
-            flash("Usuário inválido")
     return render_template('login.html')
 
 
@@ -243,12 +241,12 @@ def atualiza_funcionario(id):
             return redirect(url_for('lista_funcionarios'))
     return render_template("atualiza_funcionario.html", funcionario=funcionario)
 
-
+mes = 0
 # Atribuição dos usuários aos seus respectivos turnos
 @app.route('/cria_escala', methods=["GET", "POST"])
 @login_required
 def cria_escala():
-    global mes, lista_mes
+    global lista_mes, mes_str
     page = request.args.get('page', 1, type=int)
     per_page = 50
     todos_funcionarios = tb_Funcionarios.query.paginate(page=page, per_page=per_page)
@@ -262,6 +260,9 @@ def cria_escala():
         user_folg1 = request.form['name_folg1']
         user_folg2 = request.form['name_folg2']
         mes = int(request.form['mes'])
+        lista_meses = ['', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
+                       'Outubro', 'Novembro', 'Dezembro']
+        mes_str = lista_meses[int(mes)]
         # Verificação do ano atual
         ano_var = datetime.today()
         ano = ano_var.year
@@ -276,43 +277,19 @@ def cria_escala():
 
         # Condição para meses em que o dia 1 não cai em um domingo
         if lista_mes[0][0] == 1:  # Verifica se o dia 1° não é em um domingo
-            escala_1(user1, user2a, user2b, user3, user4, user_folg1, user_folg2, lista_mes)
+            escala_1(user1, user2a, user2b, user3, user4, user_folg1, user_folg2, lista_mes, mes_str)
         else:
-            escala_2(user1, user2a, user2b, user3, user4, user_folg1, user_folg2, lista_mes)
+            escala_2(user1, user2a, user2b, user3, user4, user_folg1, user_folg2, lista_mes, mes_str)
         sleep(3)
         return redirect(url_for('escala_mensal'))
-    else:
-        mes = ''
     return render_template("cria_escala.html", funcionarios=todos_funcionarios)
-
-
-# Criação dos valores na tabela semanal na tabela tb_Tabela
-def atualiza_db(domingo, segunda, terca, quarta, quinta, sexta, sabado):
-    # Escala da primeira semana
-    db.session.add(tb_Semana('Data', '', domingo[0], segunda[0], terca[0], quarta[0], quinta[0], sexta[0], sabado[0]))
-    db.session.add(
-        tb_Semana('1° Turno', '00:00 - 06:15', domingo[1], segunda[1], terca[1], quarta[1], quinta[1], sexta[1],
-                  sabado[1]))
-    db.session.add(
-        tb_Semana('2° Turno', '06:00 - 12:15', domingo[2], segunda[2], terca[2], quarta[2], quinta[2], sexta[2],
-                  sabado[2]))
-    db.session.add(
-        tb_Semana('2° Turno', '07:00 - 13:15', domingo[3], segunda[3], terca[3], quarta[3], quinta[3], sexta[3],
-                  sabado[3]))
-    db.session.add(
-        tb_Semana('3° Turno', '12:00 - 18:15', domingo[4], segunda[4], terca[4], quarta[4], quinta[4], sexta[4],
-                  sabado[4]))
-    db.session.add(
-        tb_Semana('4° Turno', '18:00 - 00:15', domingo[5], segunda[5], terca[5], quarta[5], quinta[5], sexta[5],
-                  sabado[5]))
-    db.session.commit()
 
 
 # Funções que criam o arquivo HTML e CSV das tabelas
 # Escala para meses em que o dia 1 cai em um domingo
-def escala_1(user1, user2a, user2b, user3, user4, user_folg1, user_folg2, lista_mes):
+def escala_1(user1, user2a, user2b, user3, user4, user_folg1, user_folg2, lista_mes, mes_str):
     global tbl_csv_0, tbl_csv_1, tbl_csv_2, tbl_csv_3, tbl_csv_4, tbl_csv_5, segunda, terca, quarta, quinta, sexta, \
-        sabado, dia_none
+        sabado, dia_none, turno, horario
     domingo = None
 
     for smn in range(len(lista_mes)):
@@ -327,7 +304,7 @@ def escala_1(user1, user2a, user2b, user3, user4, user_folg1, user_folg2, lista_
 
         # Criação da escala para cada dia
         turno = ['Data', '1° Turno', '2° Turno', '2° Turno', '3° Turno', '4° Turno']  # Turnos
-        horario = ['---', '00:00 - 06:15', '06:00 - 12:15', '07:00 - 13:15', '12:00 - 18:15', '18:00 - 00:15']
+        horario = [mes_str, '00:00 - 06:15', '06:00 - 12:15', '07:00 - 13:15', '12:00 - 18:15', '18:00 - 00:15']
         segunda = [data_seg, user_folg1, user2a, user2b, user3, user4]
         terca = [data_ter, user1, user2a, user2b, user_folg1, user4]  # Escala da terça-feira
         quarta = [data_qua, user1, user_folg1, user2b, user3, user4]  # Escala da quarta-feira
@@ -346,7 +323,7 @@ def escala_1(user1, user2a, user2b, user3, user4, user_folg1, user_folg2, lista_
         elif smn == 3:
             domingo = [data_dom, user1, user2a, user_folg1, user3, user4]  # Folga do turno 2b
         elif smn == 4:
-            domingo = [data_dom, user1, user2a, '', user2b, user_folg1]  # Folga do turno 3 e 4
+            domingo = [data_dom, user1, user2a, 'alocado', user2b, user_folg1]  # Folga do turno 3 e 4
             segunda = [data_seg, user_folg2, user2a, user2b, user_folg1, user4]
 
         # Condição que verifica se o dia da semana é um dia do calendário do mês escolhido
@@ -387,19 +364,19 @@ def escala_1(user1, user2a, user2b, user3, user4, user_folg1, user_folg2, lista_
         # Funções que receberão o código HTML e CSV para cada tabela da semana
         if smn == 0:
             tbl_csv_0 = tbl_csv
-            atualiza_db(domingo, segunda, terca, quarta, quinta, sexta, sabado)
+            atualiza_db(turno, horario, domingo, segunda, terca, quarta, quinta, sexta, sabado)
         elif smn == 1:
             tbl_csv_1 = tbl_csv
-            atualiza_db(domingo, segunda, terca, quarta, quinta, sexta, sabado)
+            atualiza_db(turno, horario, domingo, segunda, terca, quarta, quinta, sexta, sabado)
         elif smn == 2:
             tbl_csv_2 = tbl_csv
-            atualiza_db(domingo, segunda, terca, quarta, quinta, sexta, sabado)
+            atualiza_db(turno, horario, domingo, segunda, terca, quarta, quinta, sexta, sabado)
         elif smn == 3:
             tbl_csv_3 = tbl_csv
-            atualiza_db(domingo, segunda, terca, quarta, quinta, sexta, sabado)
+            atualiza_db(turno, horario, domingo, segunda, terca, quarta, quinta, sexta, sabado)
         elif smn == 4:
             tbl_csv_4 = tbl_csv
-            atualiza_db(domingo, segunda, terca, quarta, quinta, sexta, sabado)
+            atualiza_db(turno, horario, domingo, segunda, terca, quarta, quinta, sexta, sabado)
 
     # Condição para a sexta semana
     domingo = dia_none
@@ -411,16 +388,16 @@ def escala_1(user1, user2a, user2b, user3, user4, user_folg1, user_folg2, lista_
     sabado = dia_none
 
     tbl_csv_5 = ''
-    atualiza_db(domingo, segunda, terca, quarta, quinta, sexta, sabado)
+    atualiza_db(turno, horario, domingo, segunda, terca, quarta, quinta, sexta, sabado)
 
     # Comando para executar a função de criação do código HTML e arquivo CSV das tabelas
     cria_tbl_csv(tbl_csv_0, tbl_csv_1, tbl_csv_2, tbl_csv_3, tbl_csv_4, tbl_csv_5)
 
 
 # Escala para meses em que o dia 1 não cai em um domingo
-def escala_2(user1, user2a, user2b, user3, user4, user_folg1, user_folg2, lista_mes):
+def escala_2(user1, user2a, user2b, user3, user4, user_folg1, user_folg2, lista_mes, mes_str):
     global tbl_csv_0, tbl_csv_1, tbl_csv_2, tbl_csv_3, tbl_csv_4, tbl_csv_5, segunda, terca, quarta, quinta, sexta, \
-        sabado, dia_none
+        sabado, dia_none, turno, horario
 
     for smn in range(len(lista_mes)):
         domingo = None
@@ -435,7 +412,7 @@ def escala_2(user1, user2a, user2b, user3, user4, user_folg1, user_folg2, lista_
 
         # Criação da escala para cada dia
         turno = ['Data', '1° Turno', '2° Turno', '2° Turno', '3° Turno', '4° Turno']  # Turnos
-        horario = ['---', '00:00 - 06:15', '06:00 - 12:15', '07:00 - 13:15', '12:00 - 18:15', '18:00 - 00:15']
+        horario = [mes_str, '00:00 - 06:15', '06:00 - 12:15', '07:00 - 13:15', '12:00 - 18:15', '18:00 - 00:15']
         segunda = [data_seg, user_folg1, user2a, user2b, user3, user4]
         terca = [data_ter, user1, user2a, user2b, user_folg1, user4]  # Escala da terça-feira
         quarta = [data_qua, user1, user_folg1, user2b, user3, user4]  # Escala da quarta-feira
@@ -514,22 +491,22 @@ def escala_2(user1, user2a, user2b, user3, user4, user_folg1, user_folg2, lista_
         # Funções que receberão o código HTML e CSV para cada tabela da semana
         if smn == 0:
             tbl_csv_0 = tbl_csv
-            atualiza_db(domingo, segunda, terca, quarta, quinta, sexta, sabado)
+            atualiza_db(turno, horario, domingo, segunda, terca, quarta, quinta, sexta, sabado)
         elif smn == 1:
             tbl_csv_1 = tbl_csv
-            atualiza_db(domingo, segunda, terca, quarta, quinta, sexta, sabado)
+            atualiza_db(turno, horario, domingo, segunda, terca, quarta, quinta, sexta, sabado)
         elif smn == 2:
             tbl_csv_2 = tbl_csv
-            atualiza_db(domingo, segunda, terca, quarta, quinta, sexta, sabado)
+            atualiza_db(turno, horario, domingo, segunda, terca, quarta, quinta, sexta, sabado)
         elif smn == 3:
             tbl_csv_3 = tbl_csv
-            atualiza_db(domingo, segunda, terca, quarta, quinta, sexta, sabado)
+            atualiza_db(turno, horario, domingo, segunda, terca, quarta, quinta, sexta, sabado)
         elif smn == 4:
             tbl_csv_4 = tbl_csv
-            atualiza_db(domingo, segunda, terca, quarta, quinta, sexta, sabado)
+            atualiza_db(turno, horario, domingo, segunda, terca, quarta, quinta, sexta, sabado)
         if smn == 5:
             tbl_csv_5 = tbl_csv
-            atualiza_db(domingo, segunda, terca, quarta, quinta, sexta, sabado)
+            atualiza_db(turno, horario, domingo, segunda, terca, quarta, quinta, sexta, sabado)
 
     if len(lista_mes) == 5:
         # Condição para a sexta semana
@@ -542,10 +519,28 @@ def escala_2(user1, user2a, user2b, user3, user4, user_folg1, user_folg2, lista_
         sabado = dia_none
 
         tbl_csv_5 = ''
-        atualiza_db(domingo, segunda, terca, quarta, quinta, sexta, sabado)
+        atualiza_db(turno, horario, domingo, segunda, terca, quarta, quinta, sexta, sabado)
 
     # Comando para executar a função de criação do código HTML e arquivo CSV das tabelas
     cria_tbl_csv(tbl_csv_0, tbl_csv_1, tbl_csv_2, tbl_csv_3, tbl_csv_4, tbl_csv_5)
+
+
+# Criação dos valores na tabela semanal na tabela tb_Tabela
+def atualiza_db(turno, horario, domingo, segunda, terca, quarta, quinta, sexta, sabado):
+    # Escala da primeira semana
+    db.session.add(
+        tb_Semana(turno[0], horario[0], domingo[0], segunda[0], terca[0], quarta[0], quinta[0], sexta[0], sabado[0]))
+    db.session.add(
+        tb_Semana(turno[1], horario[1], domingo[1], segunda[1], terca[1], quarta[1], quinta[1], sexta[1], sabado[1]))
+    db.session.add(
+        tb_Semana(turno[2], horario[2], domingo[2], segunda[2], terca[2], quarta[2], quinta[2], sexta[2],sabado[2]))
+    db.session.add(
+        tb_Semana(turno[3], horario[3], domingo[3], segunda[3], terca[3], quarta[3], quinta[3], sexta[3],sabado[3]))
+    db.session.add(
+        tb_Semana(turno[4], horario[4], domingo[4], segunda[4], terca[4], quarta[4], quinta[4], sexta[4], sabado[4]))
+    db.session.add(
+        tb_Semana(turno[5], horario[5], domingo[5], segunda[5], terca[5], quarta[5], quinta[5], sexta[5],sabado[5]))
+    db.session.commit()
 
 
 # Criação do arquivo CSV das tabelas
@@ -560,10 +555,7 @@ def cria_tbl_csv(tbl_csv_0, tbl_csv_1, tbl_csv_2, tbl_csv_3, tbl_csv_4, tbl_csv_
 @app.route('/escala_mensal')
 # @login_required Está página ficará livre para ser acessada pelos funcionários
 def escala_mensal():
-    # comandos para definir qual mês é impressor no título da tabela
-    lista_meses = ['', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
-                   'Outubro', 'Novembro', 'Dezembro']
-    mes_str = lista_meses[int(mes)]
+
     # Escala da primeira semana
     page = request.args.get('page', 1, type=int)
     esc_1 = tb_Semana.query.paginate(page=page, per_page=6)
